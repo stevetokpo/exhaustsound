@@ -1,4 +1,5 @@
 import { ToneEngine } from "./engine";
+import { AmbienceEngine } from "./ambience";
 import { TrackChannel } from "./trackChannel";
 import { busGainFor, peekHub, ramp, resumeHub } from "./hub";
 import { DEFAULT_SETTINGS, type EngineSettings } from "./types";
@@ -15,6 +16,7 @@ const FADE_OUT = 0.7;
  */
 export class SessionMixer {
   readonly tone = new ToneEngine();
+  readonly ambience = new AmbienceEngine();
   readonly track = new TrackChannel();
 
   private state: SessionState = "idle";
@@ -38,6 +40,7 @@ export class SessionMixer {
     window.clearTimeout(this.fadeTimeout);
     this.fadeTimeout = null;
     this.tone.stop();
+    this.ambience.stop();
     this.track.pause();
     this.setState("idle");
   }
@@ -49,6 +52,7 @@ export class SessionMixer {
 
     const { ctx, bus } = await resumeHub();
     this.tone.start();
+    this.ambience.start();
     void this.track.play();
     ramp(ctx, bus.gain, busGainFor(this.master), FADE_IN);
     this.setState("playing");
@@ -66,6 +70,7 @@ export class SessionMixer {
     this.fadeTimeout = window.setTimeout(() => {
       this.fadeTimeout = null;
       this.tone.stop();
+      this.ambience.stop();
       this.track.pause();
       this.setState("idle");
     }, seconds * 1000 + 120);
@@ -81,6 +86,14 @@ export class SessionMixer {
 
   applyPreset(partial: Partial<EngineSettings>) {
     this.tone.applyPreset(partial);
+    if (partial.ambience !== undefined) {
+      this.ambience.setAmbience(
+        partial.ambience === "off" ? null : partial.ambience,
+        this.state === "playing",
+      );
+    }
+    if (partial.noiseLevel !== undefined) this.ambience.setLevel(partial.noiseLevel);
+    if (partial.noiseTone !== undefined) this.ambience.setTone(partial.noiseTone);
     if (partial.master !== undefined) this.setMaster(partial.master);
   }
 
@@ -92,6 +105,7 @@ export class SessionMixer {
     if (this.fadeTimeout !== null) window.clearTimeout(this.fadeTimeout);
     this.fadeTimeout = null;
     this.tone.dispose();
+    this.ambience.dispose();
     this.track.dispose();
     this.state = "idle";
   }

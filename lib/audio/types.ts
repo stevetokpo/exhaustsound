@@ -6,6 +6,15 @@ export type ToneMode = "pure" | "binaural" | "isochronic";
 
 export type NoiseColor = "off" | "white" | "pink" | "brown";
 
+/** Ambiances naturelles synthétisées (voir lib/audio/ambience.ts). */
+export type AmbienceId =
+  | "pluie" | "averse" | "orage" | "vent"
+  | "vagues" | "ruisseau" | "feu" | "grillons";
+
+/** Ce que joue la couche de fond : un bruit brut ou une ambiance.
+ *  Les deux s'excluent — une pluie est déjà du bruit filtré. */
+export type Texture = NoiseColor | AmbienceId;
+
 export interface EngineSettings {
   /** Porteuse, 20 Hz → 10 000 Hz */
   frequency: number;
@@ -18,6 +27,7 @@ export interface EngineSettings {
   /** Niveau de la porteuse 0 → 1 */
   toneLevel: number;
   noise: NoiseColor;
+  ambience: AmbienceId | "off";
   noiseLevel: number;
   /** Passe-bas sur le bruit : 200 Hz (sourd) → 16 000 Hz (ouvert) */
   noiseTone: number;
@@ -33,6 +43,7 @@ export const DEFAULT_SETTINGS: EngineSettings = {
   depth: 0,
   toneLevel: 0.55,
   noise: "off",
+  ambience: "off",
   noiseLevel: 0.3,
   noiseTone: 4000,
   master: 0.35,

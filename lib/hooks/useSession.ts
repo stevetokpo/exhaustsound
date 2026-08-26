@@ -2,12 +2,20 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SessionMixer, type SessionState } from "@/lib/audio/session";
-import { DEFAULT_SETTINGS, type EngineSettings } from "@/lib/audio/types";
+import {
+  DEFAULT_SETTINGS,
+  type AmbienceId,
+  type EngineSettings,
+  type NoiseColor,
+  type Texture,
+} from "@/lib/audio/types";
 import type { Preset } from "@/lib/audio/presets";
 import type { Track } from "@/lib/library/types";
 
 /** Durée du fondu de fin de séance, en secondes. */
 export const SESSION_FADE = 25;
+
+const NOISE_COLORS: readonly Texture[] = ["off", "white", "pink", "brown"];
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -198,10 +206,40 @@ export function useSession() {
         case "depth": tone.setDepth(value as number); break;
         case "toneLevel": tone.setToneLevel(value as number); break;
         case "noise": tone.setNoise(value as EngineSettings["noise"]); break;
-        case "noiseLevel": tone.setNoiseLevel(value as number); break;
-        case "noiseTone": tone.setNoiseTone(value as number); break;
+        case "noiseLevel":
+          tone.setNoiseLevel(value as number);
+          getMixer().ambience.setLevel(value as number);
+          break;
+        case "noiseTone":
+          tone.setNoiseTone(value as number);
+          getMixer().ambience.setTone(value as number);
+          break;
         case "master": getMixer().setMaster(value as number); break;
       }
+    },
+    [getMixer],
+  );
+
+  /**
+   * Un seul sélecteur pour la couche de fond. Bruit brut et ambiance
+   * naturelle s'excluent : une pluie est déjà du bruit filtré, les
+   * superposer ne ferait qu'ajouter du souffle.
+   */
+  const setTexture = useCallback(
+    (value: Texture) => {
+      const isNoise = NOISE_COLORS.includes(value);
+      const noise: NoiseColor = isNoise ? (value as NoiseColor) : "off";
+      const ambience: AmbienceId | "off" = isNoise ? "off" : (value as AmbienceId);
+
+      setSettings((prev) => ({ ...prev, noise, ambience }));
+      setActivePreset(null);
+
+      const mixer = getMixer();
+      mixer.tone.setNoise(noise);
+      mixer.ambience.setAmbience(
+        ambience === "off" ? null : ambience,
+        mixer.getState() === "playing",
+      );
     },
     [getMixer],
   );
@@ -256,7 +294,9 @@ export function useSession() {
     track,
     trackLevel,
     trackLoop,
+    texture: (settings.ambience !== "off" ? settings.ambience : settings.noise) as Texture,
     update,
+    setTexture,
     setMaster,
     applyPreset,
     changeDuration,

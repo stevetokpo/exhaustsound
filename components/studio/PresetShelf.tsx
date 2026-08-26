@@ -7,7 +7,7 @@ import {
   type Preset, type PresetFamily,
 } from "@/lib/audio/presets";
 
-const FAMILIES: PresetFamily[] = ["seance", "solfeggio", "ondes"];
+const FAMILIES: PresetFamily[] = ["seance", "nature", "solfeggio", "ondes"];
 
 interface PresetShelfProps {
   activePreset: string | null;
@@ -17,7 +17,7 @@ interface PresetShelfProps {
 export function PresetShelf({ activePreset, onSelect }: PresetShelfProps) {
   const [family, setFamily] = useState<PresetFamily>("seance");
   const presets = PRESETS_BY_FAMILY(family);
-  const isSession = family === "seance";
+  const isSession = family === "seance" || family === "nature";
 
   return (
     <section className="panel p-4 sm:p-5" aria-labelledby="presets-title">
@@ -31,7 +31,7 @@ export function PresetShelf({ activePreset, onSelect }: PresetShelfProps) {
       <div
         role="tablist"
         aria-label="Familles de préréglages"
-        className="inset-well mt-3 grid grid-cols-3 gap-1.5 p-1.5"
+        className="inset-well mt-3 grid grid-cols-2 gap-1.5 p-1.5 sm:grid-cols-4"
       >
         {FAMILIES.map((f) => {
           const selected = f === family;

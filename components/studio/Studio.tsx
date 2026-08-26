@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSession } from "@/lib/hooks/useSession";
 import { PresetShelf } from "./PresetShelf";
 import { ToneSection } from "./ToneSection";
-import { NoiseSection } from "./NoiseSection";
+import { TextureSection } from "./TextureSection";
 import { SessionPanel } from "./SessionPanel";
 import { BackgroundTrack } from "./BackgroundTrack";
 import { TransportDock } from "./TransportDock";
@@ -62,7 +62,12 @@ export function Studio() {
               onLevelChange={engine.setTrackLevel}
               onLoopChange={engine.setTrackLoop}
             />
-            <NoiseSection settings={engine.settings} update={engine.update} />
+            <TextureSection
+              settings={engine.settings}
+              texture={engine.texture}
+              onTextureChange={engine.setTexture}
+              update={engine.update}
+            />
           </div>
         </div>
       </div>

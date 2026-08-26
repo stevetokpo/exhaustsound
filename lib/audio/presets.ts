@@ -1,6 +1,6 @@
 import type { EngineSettings } from "./types";
 
-export type PresetFamily = "seance" | "solfeggio" | "ondes";
+export type PresetFamily = "seance" | "nature" | "solfeggio" | "ondes";
 
 export interface Preset {
   id: string;
@@ -17,6 +17,7 @@ export interface Preset {
 
 export const FAMILY_LABELS: Record<PresetFamily, string> = {
   seance: "Séances",
+  nature: "Nature",
   solfeggio: "Solfeggio",
   ondes: "Ondes cérébrales",
 };
@@ -24,6 +25,8 @@ export const FAMILY_LABELS: Record<PresetFamily, string> = {
 export const FAMILY_NOTES: Record<PresetFamily, string> = {
   seance:
     "Combinaisons prêtes à l'emploi : porteuse, battement, lit de bruit et durée.",
+  nature:
+    "Ambiances synthétisées en direct, jamais bouclées et sans aucun fichier à télécharger. Le timbre et le niveau restent réglables dans le panneau Ambiance.",
   solfeggio:
     "Attributions traditionnelles, sans validation scientifique. L'effet ressenti vient surtout du cadre d'écoute — casque, volume bas, régularité.",
   ondes:
@@ -105,6 +108,100 @@ export const PRESETS: Preset[] = [
       frequency: 528, waveform: "sine", mode: "pure", beat: 5,
       depth: 0.2, toneLevel: 0.42, noise: "off", noiseLevel: 0.3,
       noiseTone: 4000, master: 0.3,
+    },
+  },
+
+  // -------------------------------------------------------------- nature
+  {
+    id: "nat-pluie", name: "Pluie fine", family: "nature",
+    hint: "Pluie régulière, sans grave. La plus neutre pour dormir.",
+    duration: 45,
+    settings: {
+      ambience: "pluie", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.5, noiseTone: 9000, master: 0.32,
+    },
+  },
+  {
+    id: "nat-averse", name: "Averse", family: "nature",
+    hint: "Pluie dense avec du corps. Masque bien une pièce bruyante.",
+    duration: 45,
+    settings: {
+      ambience: "averse", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.55, noiseTone: 7500, master: 0.32,
+    },
+  },
+  {
+    id: "nat-orage", name: "Orage lointain", family: "nature",
+    hint: "Pluie soutenue et roulements espacés.",
+    duration: 60,
+    settings: {
+      ambience: "orage", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.5, noiseTone: 6000, master: 0.32,
+    },
+  },
+  {
+    id: "nat-vent", name: "Vent", family: "nature",
+    hint: "Souffle continu dont le timbre se déplace lentement.",
+    duration: 30,
+    settings: {
+      ambience: "vent", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.45, noiseTone: 5000, master: 0.3,
+    },
+  },
+  {
+    id: "nat-vagues", name: "Vagues", family: "nature",
+    hint: "Ressac lent, environ six vagues par minute.",
+    duration: 30,
+    settings: {
+      ambience: "vagues", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.55, noiseTone: 4000, master: 0.32,
+    },
+  },
+  {
+    id: "nat-ruisseau", name: "Ruisseau", family: "nature",
+    hint: "Filet d'eau clair et gargouillis irréguliers.",
+    duration: 25,
+    settings: {
+      ambience: "ruisseau", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.45, noiseTone: 8000, master: 0.3,
+    },
+  },
+  {
+    id: "nat-feu", name: "Feu de bois", family: "nature",
+    hint: "Braises sourdes et craquements secs.",
+    duration: 40,
+    settings: {
+      ambience: "feu", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.5, noiseTone: 3500, master: 0.3,
+    },
+  },
+  {
+    id: "nat-grillons", name: "Nuit d'été", family: "nature",
+    hint: "Stridulations décalées de quelques grillons.",
+    duration: 45,
+    settings: {
+      ambience: "grillons", noise: "off", mode: "pure", depth: 0,
+      toneLevel: 0, noiseLevel: 0.5, noiseTone: 12000, master: 0.28,
+    },
+  },
+  {
+    id: "nat-pluie-delta", name: "Pluie + Delta", family: "nature",
+    hint: "Averse posée sur un battement de sommeil profond.",
+    duration: 45, headphones: true,
+    settings: {
+      ambience: "averse", noise: "off", frequency: 100, mode: "binaural",
+      beat: 2.5, depth: 0, waveform: "sine",
+      toneLevel: 0.28, noiseLevel: 0.5, noiseTone: 6500, master: 0.3,
+    },
+  },
+  {
+    id: "nat-vagues-theta", name: "Vagues + Thêta", family: "nature",
+    hint: "Ressac et battement de méditation profonde.",
+    duration: 30, headphones: true,
+    settings: {
+      ambience: "vagues", noise: "off", frequency: 140, mode: "binaural",
+      beat: 6, depth: 0, waveform: "sine",
+      toneLevel: 0.3, noiseLevel: 0.5, noiseTone: 4000, master: 0.3,
     },
   },
 
